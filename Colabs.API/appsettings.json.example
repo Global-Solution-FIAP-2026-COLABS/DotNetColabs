@@ -1,0 +1,18 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "OracleConnection": "User Id=SEU_USUARIO;Password=SUA_SENHA;Data Source=oracle.fiap.com.br:1521/orcl;"
+  },
+  "Jwt": {
+    "Key": "uma-chave-secreta-sua-com-no-minimo-32-caracteres",
+    "Issuer": "Colabs.API",
+    "Audience": "Colabs.Clients",
+    "ExpirationMinutes": 120
+  }
+}

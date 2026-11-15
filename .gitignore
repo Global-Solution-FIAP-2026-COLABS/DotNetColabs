@@ -1,0 +1,15 @@
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Build
+[Bb]in/
+[Oo]bj/
+TestResults/
+coverage/
+
+# Segredos e logs
+appsettings.json
+logs/

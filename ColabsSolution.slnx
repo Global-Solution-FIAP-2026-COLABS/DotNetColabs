@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Colabs.API/Colabs.API.csproj" />
+  <Project Path="Colabs.IntegrationTests/Colabs.IntegrationTests.csproj" />
+  <Project Path="Colabs.UnitTests/Colabs.UnitTests.csproj" />
+</Solution>
