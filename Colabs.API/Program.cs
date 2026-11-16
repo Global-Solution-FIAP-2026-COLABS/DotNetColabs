@@ -1,3 +1,4 @@
+using Colabs.Infrastructure;
 using Colabs.Middleware;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -29,6 +30,9 @@ try
 
     // Substitui o logger padrão do ASP.NET Core pelo Serilog
     builder.Host.UseSerilog();
+
+    // Infraestrutura: DbContext (Oracle)
+    builder.Services.AddInfrastructure(builder.Configuration);
 
     builder.Services.AddControllers()
         .AddJsonOptions(o =>
@@ -86,8 +90,9 @@ try
 
     app.Run();
 }
-catch (Exception ex)
+catch (Exception ex) when (ex is not HostAbortedException)
 {
+    // HostAbortedException é lançada de propósito pelas ferramentas do EF (dotnet ef) e não é erro.
     Log.Fatal(ex, "A aplicação Colabs falhou ao iniciar.");
 }
 finally
