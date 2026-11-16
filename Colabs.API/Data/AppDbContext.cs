@@ -38,6 +38,12 @@ public class AppDbContext : DbContext
         ConfigureReview(modelBuilder);
     }
 
+    /// <summary>
+    /// O provider Oracle executa o CREATE TABLE dentro de um bloco PL/SQL (EXECUTE IMMEDIATE '...'),
+    /// sem escapar as aspas simples do texto dos CHECK constraints. Duplicá-las evita o erro PLS-00103.
+    /// </summary>
+    private static string Sql(string value) => value.Replace("'", "''");
+
     private static void ConfigureUser(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>(e =>
@@ -51,7 +57,7 @@ public class AppDbContext : DbContext
                 .HasConversion(new UpperSnakeCaseEnumConverter<UserRole>())
                 .HasDefaultValue(UserRole.User);
 
-            e.ToTable(t => t.HasCheckConstraint("DB_USER_ROLE_CK", "\"ROLE\" IN ('USER', 'ADMIN')"));
+            e.ToTable(t => t.HasCheckConstraint("DB_USER_ROLE_CK", Sql("\"ROLE\" IN ('USER', 'ADMIN')")));
         });
     }
 
@@ -104,7 +110,7 @@ public class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
 
             e.ToTable(t => t.HasCheckConstraint("DB_HELP_REQUEST_STATUS_CK",
-                "\"STATUS\" IN ('OPEN', 'IN_PROGRESS', 'COMPLETED', 'CANCELED')"));
+                Sql("\"STATUS\" IN ('OPEN', 'IN_PROGRESS', 'COMPLETED', 'CANCELED')")));    
         });
     }
 
@@ -161,7 +167,7 @@ public class AppDbContext : DbContext
             e.ToTable(t =>
             {
                 t.HasCheckConstraint("DB_DONATION_STATUS_CK",
-                    "\"STATUS\" IN ('AVAILABLE', 'MATCHED', 'DELIVERED', 'CANCELED')");
+                    Sql("\"STATUS\" IN ('AVAILABLE', 'MATCHED', 'DELIVERED', 'CANCELED')"));
                 t.HasCheckConstraint("DB_DONATION_DONOR_CK",
                     "\"ID_USER\" IS NOT NULL OR \"ID_INSTITUTION\" IS NOT NULL");
             });

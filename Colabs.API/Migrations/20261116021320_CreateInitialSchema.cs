@@ -60,7 +60,7 @@ namespace Colabs.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("DB_USER_ID_PK", x => x.ID);
-                    table.CheckConstraint("DB_USER_ROLE_CK", "\"ROLE\" IN ('USER', 'ADMIN')");
+                    table.CheckConstraint("DB_USER_ROLE_CK", "\"ROLE\" IN (''USER'', ''ADMIN'')");
                 });
 
             migrationBuilder.CreateTable(
@@ -80,7 +80,7 @@ namespace Colabs.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("DB_HELP_REQUEST_ID_PK", x => x.ID);
-                    table.CheckConstraint("DB_HELP_REQUEST_STATUS_CK", "\"STATUS\" IN ('OPEN', 'IN_PROGRESS', 'COMPLETED', 'CANCELED')");
+                    table.CheckConstraint("DB_HELP_REQUEST_STATUS_CK", "\"STATUS\" IN (''OPEN'', ''IN_PROGRESS'', ''COMPLETED'', ''CANCELED'')");
                     table.ForeignKey(
                         name: "DB_HELP_REQUEST_ID_CATEGORY_FK",
                         column: x => x.ID_CATEGORY,
@@ -120,7 +120,7 @@ namespace Colabs.Migrations
                 {
                     table.PrimaryKey("DB_DONATION_ID_PK", x => x.ID);
                     table.CheckConstraint("DB_DONATION_DONOR_CK", "\"ID_USER\" IS NOT NULL OR \"ID_INSTITUTION\" IS NOT NULL");
-                    table.CheckConstraint("DB_DONATION_STATUS_CK", "\"STATUS\" IN ('AVAILABLE', 'MATCHED', 'DELIVERED', 'CANCELED')");
+                    table.CheckConstraint("DB_DONATION_STATUS_CK", "\"STATUS\" IN (''AVAILABLE'', ''MATCHED'', ''DELIVERED'', ''CANCELED'')");
                     table.ForeignKey(
                         name: "DB_DONATION_ID_CATEGORY_FK",
                         column: x => x.ID_CATEGORY,

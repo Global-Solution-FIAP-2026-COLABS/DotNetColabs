@@ -12,7 +12,7 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace Colabs.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261116005614_CreateInitialSchema")]
+    [Migration("20261116021320_CreateInitialSchema")]
     partial class CreateInitialSchema
     {
         /// <inheritdoc />
@@ -111,7 +111,7 @@ namespace Colabs.Migrations
                         {
                             t.HasCheckConstraint("DB_DONATION_DONOR_CK", "\"ID_USER\" IS NOT NULL OR \"ID_INSTITUTION\" IS NOT NULL");
 
-                            t.HasCheckConstraint("DB_DONATION_STATUS_CK", "\"STATUS\" IN ('AVAILABLE', 'MATCHED', 'DELIVERED', 'CANCELED')");
+                            t.HasCheckConstraint("DB_DONATION_STATUS_CK", "\"STATUS\" IN (''AVAILABLE'', ''MATCHED'', ''DELIVERED'', ''CANCELED'')");
                         });
                 });
 
@@ -202,7 +202,7 @@ namespace Colabs.Migrations
 
                     b.ToTable("DB_HELP_REQUEST", t =>
                         {
-                            t.HasCheckConstraint("DB_HELP_REQUEST_STATUS_CK", "\"STATUS\" IN ('OPEN', 'IN_PROGRESS', 'COMPLETED', 'CANCELED')");
+                            t.HasCheckConstraint("DB_HELP_REQUEST_STATUS_CK", "\"STATUS\" IN (''OPEN'', ''IN_PROGRESS'', ''COMPLETED'', ''CANCELED'')");
                         });
                 });
 
@@ -399,7 +399,7 @@ namespace Colabs.Migrations
 
                     b.ToTable("DB_USER", t =>
                         {
-                            t.HasCheckConstraint("DB_USER_ROLE_CK", "\"ROLE\" IN ('USER', 'ADMIN')");
+                            t.HasCheckConstraint("DB_USER_ROLE_CK", "\"ROLE\" IN (''USER'', ''ADMIN'')");
                         });
                 });
 
