@@ -31,8 +31,21 @@ try
     // Substitui o logger padrão do ASP.NET Core pelo Serilog
     builder.Host.UseSerilog();
 
-    // Infraestrutura: DbContext (Oracle)
+    // Infraestrutura: DbContext (Oracle) + OpenTelemetry
     builder.Services.AddInfrastructure(builder.Configuration);
+
+    // Tratamento global de exceções (IExceptionHandler, .NET 8)
+    builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+    // ProblemDetails (RFC 7807) para todas as respostas de erro, com o CorrelationId da requisição.
+    builder.Services.AddProblemDetails(options =>
+        options.CustomizeProblemDetails = context =>
+        {
+            if (context.HttpContext.Items["CorrelationId"] is string correlationId)
+            {
+                context.ProblemDetails.Extensions["correlationId"] = correlationId;
+            }
+        });
 
     builder.Services.AddControllers()
         .AddJsonOptions(o =>
@@ -68,8 +81,15 @@ try
         app.UseSwaggerUI();
     }
 
-    // Precisa vir antes do request logging para que o CorrelationId já esteja no contexto de log.
+    // Precisa vir antes do exception handler e do request logging para que o
+    // CorrelationId já esteja disponível no contexto de log em ambos os casos.
     app.UseMiddleware<CorrelationIdMiddleware>();
+
+    // Última linha de defesa: captura qualquer exceção não tratada, loga e devolve ProblemDetails.
+    app.UseExceptionHandler();
+
+    // Respostas 4xx/5xx sem corpo (401, 403, 404, 429...) também saem como ProblemDetails.
+    app.UseStatusCodePages();
 
     // Loga uma linha estruturada por requisição concluída (método, path, status, duração).
     app.UseSerilogRequestLogging();
