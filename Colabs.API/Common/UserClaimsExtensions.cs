@@ -11,4 +11,11 @@ public static class UserClaimsExtensions
 
     /// <summary>true se o usuário autenticado tem o papel ADMIN.</summary>
     public static bool IsAdmin(this ClaimsPrincipal user) => user.IsInRole(AuthRoles.Admin);
+
+    /// <summary>
+    /// Monta o <see cref="Requester"/> a partir do token. Os tokens são emitidos por esta API e sempre trazem "sub";
+    /// se por algum motivo faltar, o Id 0 não corresponde a nenhum usuário e as regras de dono resultam em acesso negado.
+    /// </summary>
+    public static Requester GetRequester(this ClaimsPrincipal user) =>
+        new(user.GetUserId() ?? 0, user.IsAdmin());
 }

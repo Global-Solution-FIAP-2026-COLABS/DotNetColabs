@@ -43,10 +43,18 @@ namespace Colabs.Controllers
         {
             var result = await _authService.RegisterAsync(request);
 
-            // O cabeçalho Location (GET /api/User/{id}) será adicionado no passo 5, quando o UserController existir.
-            return result.IsSuccess
-                ? StatusCode(StatusCodes.Status201Created, UserResponse.FromEntity(result.Value!))
-                : this.ToErrorResult(result);
+            if (!result.IsSuccess)
+                return this.ToErrorResult(result);
+
+            var user = result.Value!;
+
+            var links = new List<LinkDto>
+            {
+                new(Url.Link("GetUserById", new { id = user.Id })!, LinkRelations.Self, "GET")
+            };
+
+            // Location: GET /api/User/{id} (exige autenticação; o usuário recém-criado precisa fazer login).
+            return CreatedAtRoute("GetUserById", new { id = user.Id }, UserResponse.FromEntity(user, links));
         }
 
         /// <summary>

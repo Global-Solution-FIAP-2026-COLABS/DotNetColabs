@@ -40,6 +40,9 @@ try
 
     // Services de negócio
     builder.Services.AddScoped<IAuthService, AuthService>();
+    builder.Services.AddScoped<ICategoryService, CategoryService>();
+    builder.Services.AddScoped<IInstitutionService, InstitutionService>();
+    builder.Services.AddScoped<IUserService, UserService>();
 
     // Tratamento global de exceções (IExceptionHandler, .NET 8)
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
