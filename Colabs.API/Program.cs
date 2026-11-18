@@ -1,5 +1,6 @@
 using Colabs.Infrastructure;
 using Colabs.Middleware;
+using Colabs.Services;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
@@ -34,6 +35,12 @@ try
     // Infraestrutura: DbContext (Oracle) + OpenTelemetry
     builder.Services.AddInfrastructure(builder.Configuration);
 
+    // Autenticação JWT (Bearer) + autorização. Configuração na seção "Jwt" do appsettings.
+    builder.Services.AddJwtAuthentication();
+
+    // Services de negócio
+    builder.Services.AddScoped<IAuthService, AuthService>();
+
     // Tratamento global de exceções (IExceptionHandler, .NET 8)
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
@@ -60,6 +67,19 @@ try
             Version = "v1",
             Description = "Plataforma comunitária que conecta necessidades reais a quem pode ajudar."
         });
+
+        // Botão "Authorize" no Swagger: o usuário cola apenas o token (o prefixo "Bearer " é automático).
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "Informe o token JWT obtido em POST /api/Auth/login."
+        });
+
+        options.OperationFilter<SecurityRequirementsOperationFilter>();
 
         var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
         var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -96,7 +116,7 @@ try
 
     app.UseHttpsRedirection();
 
-    // Authentication SEMPRE antes de Authorization (a autenticação JWT é adicionada no passo 4).
+    // Authentication SEMPRE antes de Authorization: primeiro identifica quem é, depois decide o que pode.
     app.UseAuthentication();
     app.UseAuthorization();
 
