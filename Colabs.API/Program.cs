@@ -43,6 +43,7 @@ try
     builder.Services.AddScoped<ICategoryService, CategoryService>();
     builder.Services.AddScoped<IInstitutionService, InstitutionService>();
     builder.Services.AddScoped<IUserService, UserService>();
+    builder.Services.AddScoped<IHelpRequestService, HelpRequestService>();
 
     // Tratamento global de exceções (IExceptionHandler, .NET 8)
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
