@@ -44,6 +44,9 @@ try
     builder.Services.AddScoped<IInstitutionService, InstitutionService>();
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddScoped<IHelpRequestService, HelpRequestService>();
+    builder.Services.AddScoped<IDonationService, DonationService>();
+    builder.Services.AddScoped<IReviewService, ReviewService>();
+    builder.Services.AddScoped<IHistoryService, HistoryService>();
 
     // Tratamento global de exceções (IExceptionHandler, .NET 8)
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
